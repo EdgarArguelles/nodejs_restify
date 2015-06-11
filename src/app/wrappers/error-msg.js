@@ -20,9 +20,9 @@ module.exports = {
         wrapper.messages = [];
         wrapper.devMessage = JSON.stringify(errors);
         for (var attributename in errors) {
-            var error = errors[attributename];
-            var msg = null;
-            var field = error.path;
+            var error = errors[attributename],
+                msg = null,
+                field = error.path;
             switch (error.kind) {
                 case "required" :
                     msg = "The field [" + field + "] is required.";

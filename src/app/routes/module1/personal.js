@@ -15,7 +15,6 @@ module.exports = function (base, server) {
 
     server.get(base + '/:id', function (req, res) {
         Personal.findById(req.params.id, function (err, doc) {
-            console.log("aa - " + doc.fullName);
             if (err || !doc) {
                 res.send(Error.NOT_FOUND, Error.get("No data available.", err ? JSON.stringify(err) : ""));
                 return;
