@@ -1,6 +1,7 @@
 var restify = require('restify'),
     mongoose = require('mongoose'),
-    passport = require('passport');
+    passport = require('passport'),
+    sessions = require("client-sessions");
 
 /* ===================== Server ======================= */
 var server = restify.createServer({
@@ -12,6 +13,14 @@ var server = restify.createServer({
 //Enable Plugins
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
+server.use(sessions({
+    // the cookie is encrypted, so needs a secret key
+    secret: 'f28-54#$"2"#$kj454s',
+    cookieName: 'session',
+    cookie: {
+        maxAge: 15 * 60 * 1000
+    }
+}));
 
 //Enable Passport
 server.use(passport.initialize());

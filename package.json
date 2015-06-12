@@ -17,6 +17,7 @@
     "npm": "1.4.x"
   },
   "dependencies": {
+    "client-sessions": "^0.7.0",
     "mongoose": "^4.0.5",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",

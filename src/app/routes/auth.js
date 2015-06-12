@@ -5,7 +5,7 @@ module.exports = function (base, server) {
     server.post(base + "/signin", function (req, res, next) {
         passport.authenticate('local', function (err, user, info) {
             if (err || !user) {
-                res.send(Error.NOT_FOUND, Error.get(err && err.show ? err.show : "The user doesn't exist.", err && err.message ? err.message : ""));
+                res.send(Error.NOT_FOUND, Error.get(info ? info : "The user doesn't exist.", err && err.message ? err.message : ""));
                 return;
             }
             req.logIn(user, function (err) {

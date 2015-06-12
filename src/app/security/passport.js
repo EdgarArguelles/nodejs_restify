@@ -12,8 +12,8 @@ module.exports = function (server) {
     }, function (username, password, done) {
         User.findOne({name: username}, function (err, user) {
             if (err) return done(err);
-            if (!user) return done(null, false);
-            if (user.password != User.hashPassword(password)) return done({show: "The password is incorrect."}, false);
+            if (!user) return done(null, false, "The user doesn't exist.");
+            if (user.password != User.hashPassword(password)) return done(null, false, "The password is incorrect.");
             return done(null, user);
         });
     }));
