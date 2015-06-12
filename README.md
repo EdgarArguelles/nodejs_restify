@@ -10,5 +10,8 @@ Backend example developing a Rest Server using NodeJs, Restifity, Passport and M
  - node: 0.10.x
  - npm: 1.4.x
  
-# Run 
+# Run
 $ node src/app/app.js
+
+# Test
+$ mocha src/ --recursive
