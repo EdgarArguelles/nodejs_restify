@@ -2,10 +2,17 @@ var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
 //var FacebookStrategy = require('passport-facebook').Strategy;
 
-module.exports = function (server) {
+module.exports = function (base, server) {
     var User = server.db.models.User;
 
-    // Local
+    // setup middleware
+    server.use(function (req, res, next) {
+        var validate = req.url.indexOf(base) === 0 && req.url !== base + "/auth/signin";
+        if (validate && !req.isAuthenticated()) return res.send(401, 'You shall not pass!');
+        return next();
+    });
+
+    // Local Strategy
     passport.use(new LocalStrategy({
         usernameField: 'name',
         passwordField: 'password'
@@ -18,7 +25,7 @@ module.exports = function (server) {
         });
     }));
 
-    // Facebook
+    // Facebook Strategy
     /*if (server.get('facebook-oauth-key')) {
      passport.use(new FacebookStrategy({
      clientID: server.get('facebook-oauth-key'),

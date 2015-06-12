@@ -18,4 +18,9 @@ module.exports = function (base, server) {
             });
         })(req, res, next);
     });
+
+    server.get(base + "/signout", function (req, res) {
+        req.logout();
+        res.send(200);
+    });
 };

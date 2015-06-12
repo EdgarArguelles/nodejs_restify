@@ -4,6 +4,7 @@ var restify = require('restify'),
     sessions = require("client-sessions");
 
 /* ===================== Server ======================= */
+var base_path = "/api";
 var server = restify.createServer({
     //contextPath
     name: 'myapp',
@@ -41,7 +42,7 @@ server.db = mongoose.connect('mongodb://localhost:27017/restify');
 require('./models/index')();
 
 /* ===================== Passport Strategies ======================= */
-require('./security/passport')(server);
+require('./security/passport')(base_path, server);
 
 /* ===================== Routes ======================= */
-require('./routes/index')('/api', server);
+require('./routes/index')(base_path, server);
