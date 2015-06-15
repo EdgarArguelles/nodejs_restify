@@ -33,11 +33,7 @@ module.exports = function (base, server) {
                 consumerSecret: __twitter_oauth_secret
             },
             function (token, tokenSecret, profile, done) {
-                User.findOne({twitterId: profile.id}, function (err, user) {
-                    if (err) return done(err);
-                    if (!user) return done(null, false, "No users found linked to your Twitter account. You may need to create an account first.");
-                    return done(err, user);
-                });
+                return done(null, profile);
             }));
     }
 

@@ -1,4 +1,5 @@
-var Error = require(__base + '/wrappers/error-msg');
+var passport = require('passport'),
+    Error = require(__base + '/wrappers/error-msg');
 
 module.exports = function (base, server) {
     var User = server.db.models.User;
@@ -53,5 +54,36 @@ module.exports = function (base, server) {
                 res.send(doc);
             });
         });
+    });
+
+    // enroll user with twitter
+    server.get(base + "/:id/enroll/twitter", function (req, res, next) {
+        User.findById(req.params.id, function (err, doc) {
+            if (err || !doc) {
+                res.send(Error.NOT_FOUND, Error.get("The user doesn't exist.", err ? JSON.stringify(err) : ""));
+                return;
+            }
+            passport.authenticate('twitter', {callbackURL: "http://" + req.headers.host + "/" + base + "/" + req.params.id + "/enroll/twitter/callback"})(req, res, next);
+        });
+    });
+
+    server.get(base + "/:id/enroll/twitter/callback", function (req, res, next) {
+        passport.authenticate('twitter', function (err, profile, info) {
+            User.findById(req.params.id, function (err, doc) {
+                if (err || !doc) {
+                    res.send(Error.NOT_FOUND, Error.get("The user doesn't exist.", err ? JSON.stringify(err) : ""));
+                    return;
+                }
+
+                doc.twitterId = profile.id;
+                doc.save(function (err, doc) {
+                    if (err) {
+                        res.send(Error.BAD_REQUEST, Error.fromErrors(err.errors));
+                        return;
+                    }
+                    res.send(doc);
+                });
+            });
+        })(req, res, next);
     });
 };
