@@ -52,3 +52,6 @@ require('./security/passport')(base_path, server);
 
 /* ===================== Routes ======================= */
 require('./routes/index')(base_path, server);
+
+/* ===================== Create at least one user ======================= */
+require('./first-user')(server.db.models.User);

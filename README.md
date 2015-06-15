@@ -15,3 +15,13 @@ $ node src/app/app.js
 
 # Test
 $ mocha src/ --recursive
+
+# Usage
+ - Set up and configure Mongo connection on DataBase section (app.js)
+ - Set the __twitter_oauth_key and __twitter_oauth_secret values (app.js)
+ - By default there is a user for login user: usertest pass: 123 (first-user.js)
+ - Login under the URL http://localhost:3000/auth/signin with the POST body {"name": "usertest", "password": "123"}
+ - You can create and edit users under the URL http://localhost:3000/api/users after login
+ - Enroll a user with Twitter account under the URL http://localhost:3000/api/users/[id]/enroll/twitter
+ - Login with Twitter authentication under the URL http://localhost:3000/auth/signin/twitter/
+ - Logout under the URL http://localhost:3000/auth/signout
