@@ -1,6 +1,6 @@
 var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
-//var FacebookStrategy = require('passport-facebook').Strategy;
+    LocalStrategy = require('passport-local').Strategy,
+    TwitterStrategy = require('passport-twitter').Strategy;
 
 module.exports = function (base, server) {
     var User = server.db.models.User;
@@ -8,7 +8,7 @@ module.exports = function (base, server) {
     // setup middleware
     server.use(function (req, res, next) {
         req.session.expires = new Date(Date.now() + __session_time);
-        var validate = req.url.indexOf(base) === 0 && req.url !== base + "/auth/signin";
+        var validate = req.url.indexOf(base) === 0;
         if (validate && !req.isAuthenticated()) return res.send(401, 'You shall not pass!');
         return next();
     });
@@ -26,21 +26,20 @@ module.exports = function (base, server) {
         });
     }));
 
-    // Facebook Strategy
-    /*if (server.get('facebook-oauth-key')) {
-     passport.use(new FacebookStrategy({
-     clientID: server.get('facebook-oauth-key'),
-     clientSecret: server.get('facebook-oauth-secret')
-     },
-     function (accessToken, refreshToken, profile, done) {
-     // Hand off to caller
-     done(null, false, {
-     accessToken: accessToken,
-     refreshToken: refreshToken,
-     profmongooseile: profile
-     });
-     }));
-     }*/
+    // Twitter Strategy
+    if (__twitter_oauth_key) {
+        passport.use(new TwitterStrategy({
+                consumerKey: __twitter_oauth_key,
+                consumerSecret: __twitter_oauth_secret
+            },
+            function (token, tokenSecret, profile, done) {
+                User.findOne({twitterId: profile.id}, function (err, user) {
+                    if (err) return done(err);
+                    if (!user) return done(null, false, "No users found linked to your Twitter account. You may need to create an account first.");
+                    return done(err, user);
+                });
+            }));
+    }
 
     // Serialize
     passport.serializeUser(function (user, done) {

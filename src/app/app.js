@@ -8,6 +8,10 @@ global.__base = __dirname;
 global.__hash_algorithm = 'sha512';
 global.__session_time = 15 * 60 * 1000;
 
+// set the twitter information
+global.__twitter_oauth_key = "";
+global.__twitter_oauth_secret = "";
+
 /* ===================== Server ======================= */
 var base_path = "/api";
 var server = restify.createServer({

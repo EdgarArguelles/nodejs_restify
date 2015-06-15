@@ -1,5 +1,5 @@
 module.exports = function (base, server) {
-    require('./auth')(base + '/auth', server);
+    require('./auth')('/auth', server);
 
     // module1
     require('./module1/user')(base + '/users', server);
