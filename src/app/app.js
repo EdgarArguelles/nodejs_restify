@@ -1,7 +1,12 @@
 var restify = require('restify'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    sessions = require("client-sessions");
+    sessions = require("express-session");
+
+/* ===================== Set Global Constant ======================= */
+global.__base = __dirname;
+global.__hash_algorithm = 'sha512';
+global.__session_time = 15 * 60 * 1000;
 
 /* ===================== Server ======================= */
 var base_path = "/api";
@@ -17,9 +22,10 @@ server.use(restify.bodyParser());
 server.use(sessions({
     // the cookie is encrypted, so needs a secret key
     secret: 'f28-54#$"2"#$kj454s',
-    cookieName: 'session',
+    saveUninitialized: false,
+    resave: false,
     cookie: {
-        maxAge: 15 * 60 * 1000
+        maxAge: global.__session_time
     }
 }));
 
@@ -30,10 +36,6 @@ server.use(passport.session());
 server.listen(3000, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
-
-/* ===================== Set Global Constant ======================= */
-global.__base = __dirname;
-global.__hash_algorithm = 'sha512';
 
 /* ===================== DataBase ======================= */
 server.db = mongoose.connect('mongodb://localhost:27017/restify');

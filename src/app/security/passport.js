@@ -7,6 +7,7 @@ module.exports = function (base, server) {
 
     // setup middleware
     server.use(function (req, res, next) {
+        req.session.expires = new Date(Date.now() + __session_time);
         var validate = req.url.indexOf(base) === 0 && req.url !== base + "/auth/signin";
         if (validate && !req.isAuthenticated()) return res.send(401, 'You shall not pass!');
         return next();
