@@ -15,7 +15,7 @@ global.__twitter_oauth_secret = "";
 /* ===================== Server ======================= */
 var base_path = "/api";
 var server = restify.createServer({
-    name: 'myapp',
+    name: 'nodejs_restify',
     version: '1.0.0'
 });
 
