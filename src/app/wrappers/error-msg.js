@@ -12,13 +12,13 @@ module.exports = {
     get: function (message, devMessage) {
         wrapper.message = message;
         wrapper.messages = [message];
-        wrapper.devMessage = devMessage;
+        wrapper.devMessage = devMessage && devMessage.message ? devMessage.message : devMessage;
         return wrapper;
     },
     fromErrors: function (errors) {
         wrapper.message = null;
         wrapper.messages = [];
-        wrapper.devMessage = JSON.stringify(errors);
+        wrapper.devMessage = errors && errors.message ? errors.message : errors;
         for (var attributename in errors) {
             var error = errors[attributename],
                 msg = null,

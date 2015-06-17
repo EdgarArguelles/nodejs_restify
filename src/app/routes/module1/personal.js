@@ -6,7 +6,7 @@ module.exports = function (base, server) {
     server.get(base + '/', function (req, res) {
         Personal.find({}, function (err, doc) {
             if (err || !doc) {
-                res.send(Error.NOT_FOUND, Error.get("No data available.", err ? JSON.stringify(err) : ""));
+                res.send(Error.NOT_FOUND, Error.get("No data available.", err));
                 return;
             }
             res.send(doc);
@@ -16,7 +16,7 @@ module.exports = function (base, server) {
     server.get(base + '/:id', function (req, res) {
         Personal.findById(req.params.id, function (err, doc) {
             if (err || !doc) {
-                res.send(Error.NOT_FOUND, Error.get("No data available.", err ? JSON.stringify(err) : ""));
+                res.send(Error.NOT_FOUND, Error.get("No data available.", err));
                 return;
             }
             res.send(doc);
@@ -37,7 +37,7 @@ module.exports = function (base, server) {
     server.put(base + '/:id', function (req, res) {
         Personal.findById(req.params.id, function (err, doc) {
             if (err || !doc) {
-                res.send(Error.NOT_FOUND, Error.get("No data available.", err ? JSON.stringify(err) : ""));
+                res.send(Error.NOT_FOUND, Error.get("No data available.", err));
                 return;
             }
 
