@@ -5,15 +5,17 @@ var passport = require('passport'),
 module.exports = function (base, server) {
     var User = server.db.models.User;
 
-    // setup middleware
+    // setup middleware (intercept all request)
     server.use(function (req, res, next) {
         req.session.expires = new Date(Date.now() + __session_time);
+        // not all the request are validated, for example with some calls like auth/signin the user
+        // authentication is not needed.
         var validate = req.url.indexOf(base) === 0;
         if (validate && !req.isAuthenticated()) return res.send(401, 'You shall not pass!');
         return next();
     });
 
-    // Local Strategy
+    // Configure the Local Strategy behavior when passport.authenticate('local') is called
     passport.use(new LocalStrategy({
         usernameField: 'name',
         passwordField: 'password'
@@ -26,7 +28,7 @@ module.exports = function (base, server) {
         });
     }));
 
-    // Twitter Strategy
+    // Configure the Twitter Strategy parameters needed when passport.authenticate('twitter') is called
     if (__twitter_oauth_key) {
         passport.use(new TwitterStrategy({
                 consumerKey: __twitter_oauth_key,
@@ -43,12 +45,14 @@ module.exports = function (base, server) {
             name: user.name,
             roles: user.roles
         };
+        // the userData object is stored on req.session.passport then is serialized, encrypted and send to client cookie
         done(null, userData);
     });
 
-    // Deserialize (called before any request when req.isAuthenticated(), and its used to inject
-    // the req.user object with the user data)
+    // Deserialize (called before any request when req.isAuthenticated(),
+    // it decrypt and deserialize the userData from client
     passport.deserializeUser(function (userData, done) {
+        // inject the userData on the request, it could be accessed with req.user
         done(null, userData);
     });
 };
