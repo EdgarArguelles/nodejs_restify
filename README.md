@@ -17,6 +17,8 @@ $ node src/app/app.js
 $ mocha src/ --recursive
 
 # Usage
+ - Install and configure a local Mongo Server
+ - Create a twitter App on https://apps.twitter.com/ (optional if you try to use authentication through twitter)
  - Set up and configure Mongo connection on DataBase section (app.js)
  - Set the __twitter_oauth_key and __twitter_oauth_secret values (app.js)
  - By default there is a user for login user: usertest pass: 123 (first-user.js)
