@@ -37,15 +37,18 @@ module.exports = function (base, server) {
             }));
     }
 
-    // Serialize
+    // Serialize (call after req.logIn function is called)
     passport.serializeUser(function (user, done) {
-        done(null, user._id);
+        var userData = {
+            name: user.name,
+            roles: user.roles
+        };
+        done(null, userData);
     });
 
-    // Deserialize
-    passport.deserializeUser(function (id, done) {
-        User.findById(id, function (err, user) {
-            done(err, user);
-        });
+    // Deserialize (called before any request when req.isAuthenticated(), and its used to inject
+    // the req.user object with the user data)
+    passport.deserializeUser(function (userData, done) {
+        done(null, userData);
     });
 };
