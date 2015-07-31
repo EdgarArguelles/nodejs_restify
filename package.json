@@ -17,6 +17,7 @@
     "npm": "1.4.x"
   },
   "dependencies": {
+    "connect-mongodb": "^1.1.5",
     "express-session": "^1.11.3",
     "mongoose": "^4.0.5",
     "passport": "^0.2.2",

@@ -1,7 +1,8 @@
 var restify = require('restify'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    sessions = require("express-session");
+    sessions = require("express-session"),
+    MongoStore = require('connect-mongodb');
 
 /* ===================== Set Global Constant ======================= */
 global.__base = __dirname;
@@ -29,7 +30,13 @@ server.use(sessions({
     secret: 'f28-54#$"2"#$kj454s', // the session ID cookie is encrypted, so needs a secret key
     saveUninitialized: false,
     resave: false,
-    // store: , // where the session data will be stored (default MemoryStore)
+    // where the session data will be stored (default MemoryStore)
+    // MemoryStore is good for development time but its not recommended for production is better to use mongo or redis
+    /*store: new MongoStore({
+     url: 'mongodb://localhost:27017/restify',
+     collectionName: 'sessions',
+     timeout: 10000
+     }),*/
     rolling: true, // Force a cookie to be set on every response. This resets the expiration date.
     cookie: {
         maxAge: global.__session_time // the cookie will expired on global.__session_time milliseconds
