@@ -7,7 +7,6 @@ module.exports = function (base, server) {
 
     // setup middleware (intercept all request)
     server.use(function (req, res, next) {
-        req.session.expires = new Date(Date.now() + __session_time);
         // not all the request are validated, for example with some calls like auth/signin the user
         // authentication is not needed.
         var validate = req.url.indexOf(base) === 0;
@@ -45,14 +44,18 @@ module.exports = function (base, server) {
             name: user.name,
             roles: user.roles
         };
-        // the userData object is stored on req.session.passport then is serialized, encrypted and send to client cookie
+        // the userData object is stored into req.session.passport.user, then passport stores the whole session data
+        // on memory database with the client cookie value as key
         done(null, userData);
     });
 
-    // Deserialize (called before any request when req.isAuthenticated(),
-    // it decrypt and deserialize the userData from client
+    // Deserialize (called before any request when req.isAuthenticated() === true)
+    // after passport reads the cookie value (key) from client, gets the session data from memory database and
+    // uses this function to inject the "user" attribute into the request, the first parameter
+    // is the req.session.passport.user value (previously stored on passport.serializeUser process)
     passport.deserializeUser(function (userData, done) {
-        // inject the userData on the request, it could be accessed with req.user
+        // injects the userData into the request, it could be accessed with req.user,
+        // in this case req.session.passport.user = req.user
         done(null, userData);
     });
 };

@@ -7,8 +7,8 @@ var logIn = function (err, user, info, req, res, next) {
         return;
     }
     // the function req.logIn only tells the server the req session is authenticated,
-    // that means req.isAuthenticated() = true, the user parameter is used on passport.serializeUser
-    // in order to be serialized and deserialized on next request.
+    // that means req.isAuthenticated() = true, the user parameter is used by passport.serializeUser
+    // in order to be serialized and store on req.session.passport.user object.
     req.logIn(user, function (err) {
         if (err) {
             res.send(Error.INTERNAL_SERVER_ERROR, Error.get("There was an error.", err.message));
@@ -22,21 +22,21 @@ var logIn = function (err, user, info, req, res, next) {
 module.exports = function (base, server) {
     var User = server.db.models.User;
 
-    // signin local users
+    // sign in local users
     server.post(base + "/signin", function (req, res, next) {
-        // process the passport LocalStrategy behavior and then call the defined callback
+        // processes the passport LocalStrategy behavior and then calls the defined callback
         passport.authenticate('local', function (err, user, info) {
             logIn(err, user, info, req, res, next);
         })(req, res, next);
     });
 
-    // signin with twitter
+    // sign in with twitter
     server.get(base + "/signin/twitter", function (req, res, next) {
-        // call the twitter API with the TwitterStrategy parameters and then callback the defined url
+        // calls the twitter API with the TwitterStrategy parameters and then callback the defined url
         passport.authenticate('twitter', {callbackURL: "http://" + req.headers.host + "/" + base + "/signin/twitter/callback"})(req, res, next);
     });
 
-    // callback after twitter API process the request
+    // callback after twitter API processes the request
     server.get(base + "/signin/twitter/callback", function (req, res, next) {
         passport.authenticate('twitter', function (err, profile, info) {
             User.findOne({twitterId: profile.id}, function (err, user) {
@@ -46,11 +46,12 @@ module.exports = function (base, server) {
         })(req, res, next);
     });
 
-    // signout
+    // sign out
     server.get(base + "/signout", function (req, res) {
         // the function req.logout only tells the server the req session is not authenticated,
         // that means req.isAuthenticated() = false
         req.logout();
+        req.session.destroy();
         res.send(200);
     });
 };

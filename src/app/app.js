@@ -22,18 +22,24 @@ var server = restify.createServer({
 //Enable Plugins
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
+// the server creates a new session each request without a cookie, then persists this session data on a
+// memory database (or any other Session Stores) using an unique key, finally this key is send to client
+// as a cookie value, next requests will content the cookie and the server will get the same session data than before.
 server.use(sessions({
-    // the cookie is encrypted, so needs a secret key
-    secret: 'f28-54#$"2"#$kj454s',
+    secret: 'f28-54#$"2"#$kj454s', // the session ID cookie is encrypted, so needs a secret key
     saveUninitialized: false,
     resave: false,
+    // store: , // where the session data will be stored (default MemoryStore)
+    rolling: true, // Force a cookie to be set on every response. This resets the expiration date.
     cookie: {
-        maxAge: global.__session_time
+        maxAge: global.__session_time // the cookie will expired on global.__session_time milliseconds
     }
 }));
 
 //Enable Passport
 server.use(passport.initialize());
+// passport will use the server session in order to read and inject new attributes
+// like req.session.passport.user and req.user
 server.use(passport.session());
 
 server.listen(3000, function () {
