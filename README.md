@@ -9,6 +9,9 @@ Backend example developing a Rest Server using NodeJs, Restifity, Passport and M
 # Engines
  - node: 0.10.x
  - npm: 1.4.x
+
+# Install
+$ npm install 
  
 # Run
 $ node src/app/app.js
